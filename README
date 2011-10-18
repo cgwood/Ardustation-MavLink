@@ -1,0 +1,10 @@
+Created
+18/10/2011
+
+Ardustation software for MavLink and ArduPilot Mega, based on original software by Michael Smith
+
+Currently to make work, add line
+
+#define MAVLINK_COMM_NUM_BUFFERS 1
+
+to the top of C:\Program Files\arduino\libraries\GCS_MAVLink\GCS_MAVLink.h
