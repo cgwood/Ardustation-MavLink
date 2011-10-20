@@ -228,14 +228,15 @@ MAVComm::MessageHandler msgHandlers[] = {
         // Markup wants to see any packet that it may need later to
         // mark up a page.
 //        {MAVLINK_MSG_ID_HEARTBEAT,   Markup::message,   &markup},
-        {MAVLINK_MSG_ID_ATTITUDE,    Markup::message,   &markup},
-        {MAVLINK_MSG_ID_GPS_RAW,     Markup::message,   &markup},
-        {MAVLINK_MSG_ID_GPS_STATUS,  Markup::message,   &markup},
-        {MAVLINK_MSG_ID_SYS_STATUS,  Markup::message,   &markup},
-        {MAVLINK_MSG_ID_RAW_PRESSURE,Markup::message,   &markup}, 
-        {MAVLINK_MSG_ID_COMMAND,     Markup::message,   &markup},
+        {MAVLINK_MSG_ID_ATTITUDE,         Markup::message,   &markup},
+        {MAVLINK_MSG_ID_GPS_RAW,          Markup::message,   &markup},
+        {MAVLINK_MSG_ID_GPS_STATUS,       Markup::message,   &markup},
+        {MAVLINK_MSG_ID_SYS_STATUS,       Markup::message,   &markup},
+        {MAVLINK_MSG_ID_RAW_PRESSURE,     Markup::message,   &markup},
+        {MAVLINK_MSG_ID_COMMAND,          Markup::message,   &markup},
         {MAVLINK_MSG_ID_WAYPOINT_CURRENT, Markup::message,   &markup},
-        {MAVLINK_MSG_ID_WAYPOINT_COUNT, Markup::message,   &markup},
+        {MAVLINK_MSG_ID_WAYPOINT_COUNT,   Markup::message,   &markup},
+        {MAVLINK_MSG_ID_WAYPOINT,         Markup::message,   &markup},
 //        {MAVLINK_MSG_ID_PARAM_VALUE, Markup::message,   &markup},
 
         // Messages that cause the summary page to update.
@@ -254,6 +255,7 @@ MAVComm::MessageHandler msgHandlers[] = {
         {MAVLINK_MSG_ID_COMMAND,   PageStatus::notify,     &MissionPage},
         {MAVLINK_MSG_ID_WAYPOINT_CURRENT, PageStatus::notify,     &MissionPage},
         {MAVLINK_MSG_ID_WAYPOINT_COUNT, PageStatus::notify,     &MissionPage},
+        {MAVLINK_MSG_ID_WAYPOINT, PageStatus::notify,     &MissionPage},
         {MAVLINK_MSG_ID_GPS_RAW,   PageStatus::notify,     &MissionPage},
         // Messages that cause the alert page to update
 //        {MAVLINK_MSG_ID_SYS_STATUS, PageAlert::notify,     &alertPage},

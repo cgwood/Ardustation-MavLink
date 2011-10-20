@@ -76,9 +76,9 @@
 #define AVAIL_PRESSURE    (AVAIL(V_P_ALTITUDE) | AVAIL(V_AIRSPEED))
 #define AVAIL_WP_CURR     (AVAIL(V_COMMANDID))
 #define AVAIL_WP_COUNT    (AVAIL(V_WPCOUNT))
-#define AVAIL_COMMAND     (AVAIL(V_WPNUMBER)   | AVAIL(V_WPCOUNT)   | AVAIL(V_WPTYPE)    | AVAIL(V_P1) | AVAIL(V_P2) | AVAIL(V_P3) | AVAIL(V_P4))
+#define AVAIL_COMMAND     (AVAIL(V_WPNUMBER)   | AVAIL(V_WPTYPE)    | AVAIL(V_BEARERR)   | AVAIL(V_P1) | AVAIL(V_P2) | AVAIL(V_P3) | AVAIL(V_P4))
 #define AVAIL_COMMANDHOME (AVAIL(V_WPHNUMBER)  | AVAIL(V_WPHCOUNT)  | AVAIL(V_WPHTYPE)   | AVAIL(V_HP1) | AVAIL(V_HP2) | AVAIL(V_HP3) | AVAIL(V_HP4))
-#define AVAIL_VALUE       (AVAIL(V_BEARERR))
+//#define AVAIL_VALUE       (AVAIL(V_BEARERR))
 
 // How many commands to remember:
 // APM is set to send these on process must and mays, but we might not be interested in them yet
@@ -87,7 +87,7 @@
 
 class Markup {
 public:
-        Markup() {_cmdbufpos=0;_voltage=0;};
+        Markup() {_cmdbufpos=0;_voltage=0;_currWpt=10;};
 
         void            emit(const prog_char *str);
         static void     message(void *arg, mavlink_message_t *buf); //, uint8_t messageID, uint8_t messageVersion
@@ -102,14 +102,18 @@ private:
         // cached packets
         uint16_t _voltage;
         uint8_t _satcount;
+        uint8_t _currWpt;
         mavlink_sys_status_t _syspacket;
         mavlink_attitude_t _attpacket;
         mavlink_gps_raw_t _gpspacket;
 //        uint8_t _num_sats;
 //        mavlink_gps_status_t _gpsstatus;
 //        mavlink_raw_pressure_t _prepacket;
-        mavlink_waypoint_current_t _pktCurrWpt;
+        mavlink_waypoint_current_t _pktCurrWptNum;
         mavlink_waypoint_count_t _pktWptCount;
+        mavlink_waypoint_t _pktCurrWpt;
+        mavlink_waypoint_t _pktHomeWpt;
+        mavlink_waypoint_t _pktTempWpt;
 /*
         struct msg_heartbeat    _heartbeat;
         struct msg_attitude     _attitude;

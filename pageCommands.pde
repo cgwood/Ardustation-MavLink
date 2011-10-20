@@ -205,6 +205,10 @@ PageCommands::_commandSend(void)
 	switch (_state - 201)
 	{
 	case 0: // Reset waypoint index
+		mavlink_msg_waypoint_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+//		mavlink_msg_waypoint_count_pack(0xFF, 0xFA, &msg, 1, 1, 1);
+//		mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, 0);
+		comm.send(&msg);
 		break;
 	case 1: // Request parameters
 		mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, 1, 1);

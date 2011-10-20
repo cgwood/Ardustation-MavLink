@@ -346,39 +346,13 @@ Markup::_substitute(uint8_t key)
                         value.u = constrain(_gpspacket.hdg, 0, 359);
                 }
                 break;
-                /*
+
         // Waypoint info page
-        case V_HOMEDIST:
-                fieldWidth = 4;
-                if (available) {
-                  // Gives 2D distance from home, altitude isn't taken into account, yet...
-                  // Convert to radians
-                  float lat1 = _commandHome.p3/10000000.0 * 0.0174532925;
-                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
-                  float long1 = _commandHome.p4/10000000.0 * 0.0174532925;
-                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
-                  
-                  // Find difference
-                  float dlat = lat2 - lat1;
-                  float dlong = long2 - long1;
-                  
-                  // Calculate distance
-                  float a = sin(dlat / 2.0) * sin(dlat / 2.0) +
-                            cos(lat1) * cos(lat2) *
-                            sin(dlong / 2.0) * sin(dlong / 2.0);
-                  value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
-                  
-                  format = UNSIGNED;
-                } else {
-                  //comm.send_msg_command_request(0);
-                }
-                break;
-                */
         case V_COMMANDID:
                 fieldWidth = 2;
                 if (available) {
                   //value.u = _heartbeat.commandIndex;
-                  value.u = _pktCurrWpt.seq;
+                  value.u = _pktCurrWptNum.seq;
                   format = UNSIGNED;
                 }
                 break;
@@ -390,112 +364,130 @@ Markup::_substitute(uint8_t key)
                 }
                 break;
         case V_WPTYPE:
-                fieldWidth = 10;
-                if (available) {
-//                  if (_heartbeat.commandIndex == 0)
-//                  {
-//                    value.c = PSTR("Home\0");
-//                  }
-//                  else
-//                  {
-//                    //value.c = commandModes.lookup(constrain(_command[_heartbeat.commandIndex].commandID-15,0,8));
-//                    switch(_commandCurr.commandID) {
-//                      case 0x10:
-//                        value.c = PSTR("Waypoint  ");
-//                        break;
-//                      case 0x11:
-//                        value.c = PSTR("Loiter    ");
-//                        break;
-//                      case 0x12:
-//                        value.c = PSTR("LoiterTurn");
-//                        break;
-//                      case 0x13:
-//                        value.c = PSTR("LoiterTime");
-//                        break;
-//                      case 0x14:
-//                        value.c = PSTR("Return2Ltr");
-//                        break;
-//                      case 0x15:
-//                        value.c = PSTR("Land      ");
-//                        break;
-//                      case 0x16:
-//                        value.c = PSTR("Take off  ");
-//                        break;
-//                      default:
-//                        value.c = PSTR("Unknown   ");
-//                        break;
-//                    }
-//                  }
-                  format = STRING;
-                }
-                break;
+			fieldWidth = 10;
+			if (available) {
+				switch(_pktCurrWpt.command) {
+				case MAV_CMD_NAV_WAYPOINT:
+					value.c = PSTR("Waypoint  ");
+					break;
+				case MAV_CMD_NAV_LOITER_UNLIM:
+					value.c = PSTR("Loiter    ");
+					break;
+				case MAV_CMD_NAV_LOITER_TURNS:
+					value.c = PSTR("LoiterTurn");
+					break;
+				case MAV_CMD_NAV_LOITER_TIME:
+					value.c = PSTR("LoiterTime");
+					break;
+				case MAV_CMD_NAV_RETURN_TO_LAUNCH:
+					value.c = PSTR("Return2Ltr");
+					break;
+				case MAV_CMD_NAV_LAND:
+					value.c = PSTR("Land      ");
+					break;
+				case MAV_CMD_NAV_TAKEOFF:
+					value.c = PSTR("Take off  ");
+					break;
+				default:
+					value.c = PSTR("Unknown   ");
+					break;
+				}
+				format = STRING;
+			}
+			break;
         case V_BEARERR:
                 fieldWidth = 4;
                 if (available) {
                   //value.s = _valueBerr.value / 100;
+                	///XXX Need to add bearing error calculation here
+                	value.s = 2;
                   if (value.s > 180)
                     value.s = value.s-360;
                   format = SIGNED;
                 }
                 break;
-//        case V_WPDIST:
-//                fieldWidth = 4;
-//                if (available) {
-//                  /// @bug Assumes that we have the current location available, which is normally reasonable
-//                  // Calculates the distance between the waypoint and the current location - move to function?
-//                  // Gives 2D distance, altitude isn't taken into account, yet...   
-//                  // Convert to radians
-//                  float lat1 = _commandCurr.p3/10000000.0 * 0.0174532925;
-//                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
-//                  float long1 = _commandCurr.p4/10000000.0 * 0.0174532925;
-//                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
-//                  
-//                  // Find difference
-//                  float dlat = lat2 - lat1;
-//                  float dlong = long2 - long1;
-//                  
-//                  // Calculate distance
-//                  float a = sin(dlat / 2.0) * sin(dlat / 2.0) +
-//                            cos(lat1) * cos(lat2) *
-//                            sin(dlong / 2.0) * sin(dlong / 2.0);
-//                  value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
-//                  format = UNSIGNED;
-//                }
-//                break;
-//        case V_WPETA:
-//                fieldWidth = 3;
-//                if (available && _gpspacket.v > 0) {
-//                  // Calculates the ETA, based upon distance and speed, assuming we're on track
-//                  // Based upon 2D distance, altitude isn't taken into account, yet...    
-//                  
-//                  // Convert to radians
-//                  float lat1 = _commandCurr.p3/10000000.0 * 0.0174532925;
-//                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
-//                  float long1 = _commandCurr.p4/10000000.0 * 0.0174532925;
-//                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
-//                  
-//                  // Find difference
-//                  float dlat = lat2 - lat1;
-//                  float dlong = long2 - long1;
-//                  
-//                  // Calculate distance
-//                  float a = sin(dlat / 2.0) * sin(dlat / 2.0) +
-//                            cos(lat1) * cos(lat2) *
-//                            sin(dlong / 2.0) * sin(dlong / 2.0);
-//                  value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
-//                            
-//                  // Calculate speed
-//                  value.u /= _gpspacket.v / 100;
-//                  format = UNSIGNED;
-//                }
-//                else
-//                  value.c = PSTR("----------");
-//                break;
+        case V_WPDIST:
+                fieldWidth = 4;
+                if (available) {
+                	/// XXX Make a function find_distance
+                  /// @bug Assumes that we have the current location available, which is normally reasonable
+                  // Calculates the distance between the waypoint and the current location - move to function?
+                  // Gives 2D distance, altitude isn't taken into account, yet...
+                  // Convert to radians
+                  float lat1 = _pktCurrWpt.param3/10000000.0 * 0.0174532925;
+                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
+                  float long1 = _pktCurrWpt.param4/10000000.0 * 0.0174532925;
+                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
+
+                  // Find difference
+                  float dlat = lat2 - lat1;
+                  float dlong = long2 - long1;
+
+                  // Calculate distance
+                  float a = sin(dlat / 2.0) * sin(dlat / 2.0) +
+                            cos(lat1) * cos(lat2) *
+                            sin(dlong / 2.0) * sin(dlong / 2.0);
+                  value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
+                  format = UNSIGNED;
+                }
+                break;
+        case V_HOMEDIST:
+                fieldWidth = 4;
+                if (available) {
+                  // Gives 2D distance from home, altitude isn't taken into account, yet...
+                  // Convert to radians
+                  float lat1 = _pktHomeWpt.param3/10000000.0 * 0.0174532925;
+                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
+                  float long1 = _pktHomeWpt.param4/10000000.0 * 0.0174532925;
+                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
+
+                  // Find difference
+                  float dlat = lat2 - lat1;
+                  float dlong = long2 - long1;
+
+                  // Calculate distance
+                  float a = sin(dlat / 2.0) * sin(dlat / 2.0) +
+                            cos(lat1) * cos(lat2) *
+                            sin(dlong / 2.0) * sin(dlong / 2.0);
+                  value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
+
+                  format = UNSIGNED;
+                } else {
+                  //comm.send_msg_command_request(0);
+                }
+                break;
+        case V_WPETA:
+                fieldWidth = 3;
+                if (available && _gpspacket.v > 0) {
+                  // Calculates the ETA, based upon distance and speed, assuming we're on track
+                  // Based upon 2D distance, altitude isn't taken into account, yet...
+
+                  // Convert to radians
+                  float lat1 = _pktCurrWpt.param3/10000000.0 * 0.0174532925;
+                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
+                  float long1 = _pktCurrWpt.param4/10000000.0 * 0.0174532925;
+                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
+
+                  // Find difference
+                  float dlat = lat2 - lat1;
+                  float dlong = long2 - long1;
+
+                  // Calculate distance
+                  float a = sin(dlat / 2.0) * sin(dlat / 2.0) +
+                            cos(lat1) * cos(lat2) *
+                            sin(dlong / 2.0) * sin(dlong / 2.0);
+                  value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
+
+                  // Calculate speed
+                  value.u /= _gpspacket.v / 100;
+                  format = UNSIGNED;
+                }
+                else
+                  value.c = PSTR("----------");
+                break;
         default:
-                //Serial.print("unrecognised format code ");
-                PrintPSTR(PSTR("unrecognised format code "));
-                Serial.println((int)key, 16);
-//                Serial.printf_P(PSTR("unrecognised format code %x\n"), (int)key);
+//                PrintPSTR(PSTR("unrecognised format code "));
+//                Serial.println((int)key, 16);
                 // debugging hint
                 fieldWidth = 1;
                 format = STRING;
@@ -638,14 +630,53 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
 //            break;
 
         case MAVLINK_MSG_ID_WAYPOINT_CURRENT:
-            mavlink_msg_waypoint_current_decode((mavlink_message_t*)buf, &_pktCurrWpt);
+            mavlink_msg_waypoint_current_decode((mavlink_message_t*)buf, &_pktCurrWptNum);
+            // If the waypoint has changed, ask more info about it
+            if (_pktCurrWptNum.seq != _currWpt) {
+            	_currWpt = _pktCurrWptNum.seq;
+            	mavlink_message_t msg;
+            	mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, _currWpt);
+            	comm.send(&msg);
+            	if (!_available(V_WPCOUNT)) {
+            		mavlink_msg_waypoint_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+            		comm.send(&msg);
+            	}
+            }
             _availability[0] |= AVAIL_WP_CURR;
             break;
         case MAVLINK_MSG_ID_WAYPOINT_COUNT:
             mavlink_msg_waypoint_count_decode((mavlink_message_t*)buf, &_pktWptCount);
-            _availability[0] |= AVAIL_WP_COUNT;
+            _availability[1] |= AVAIL_WP_COUNT;
             break;
             
+        case MAVLINK_MSG_ID_WAYPOINT:
+        	mavlink_msg_waypoint_decode(buf, &_pktTempWpt);
+        	// Home
+        	if (_pktCurrWpt.seq == 0) {
+            	mavlink_msg_waypoint_decode(buf, &_pktHomeWpt);
+                _availability[1] |= AVAIL_COMMANDHOME;
+
+                // pretend also current waypoint for now
+            	mavlink_msg_waypoint_decode(buf, &_pktCurrWpt);
+                _availability[1] |= AVAIL_COMMAND;
+			}
+            // Current
+        	else if (_pktCurrWpt.seq == _currWpt) {
+            	mavlink_msg_waypoint_decode(buf, &_pktCurrWpt);
+                _availability[1] |= AVAIL_COMMAND;
+            	PrintPSTR(PSTR("Been told about about current waypoint "));
+            	Serial.println(_pktCurrWpt.seq,DEC);
+			}
+            // Other
+        	else {
+            	PrintPSTR(PSTR("Been told about about waypoint "));
+            	Serial.println(_pktTempWpt.seq,DEC);
+        	}
+
+//            PrintPSTR(PSTR("Current Waypoint "));
+//            Serial.println(_pktWpt.command,DEC);
+        	break;
+
 //        case MAVLINK_MSG_ID_PARAM_VALUE:
 //                // Find what type of pid message
 //                memcpy(&_pidtemp, buf, sizeof(_pidtemp));
