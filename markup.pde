@@ -176,37 +176,52 @@ Markup::_substitute(uint8_t key)
                 fieldWidth = 9;
                 format = STRING;
                 if (available) {
-//                value.c = stringModes.lookup(_syspacket.mode);
-//                  if (NULL == value.c)
-//                    value.c = PSTR("??MODE??");
-                  if (_syspacket.mode == MAV_MODE_MANUAL)
-                    value.c = (PSTR("MANUAL"));
-                  else if (_syspacket.mode == MAV_MODE_GUIDED)
-                    value.c = (PSTR("GUIDED"));
-                  else if (_syspacket.mode == MAV_MODE_TEST1)
-                    value.c = (PSTR("STABILIZE"));
-                  else if (_syspacket.mode == MAV_MODE_TEST2) {
-                    if (_syspacket.nav_mode == 1)
-                      value.c = (PSTR("FBW A"));
-                    else if (_syspacket.nav_mode == 2)
-                      value.c = (PSTR("FBW B"));
-                    else
-                      value.c = (PSTR("TEST 2"));
-                  }
-                  else if (_syspacket.mode == MAV_MODE_AUTO) {
-                    if (_syspacket.nav_mode == MAV_NAV_LOITER)
-                      value.c = (PSTR("LOITER"));
-                    if (_syspacket.nav_mode == MAV_NAV_WAYPOINT)
-                      value.c = (PSTR("AUTO"));
-                    if (_syspacket.nav_mode == MAV_NAV_RETURNING)
-                      value.c = (PSTR("RTL"));
-                    else
-                      value.c = PSTR("??AUTO??");
-                  }
-                  else if (_syspacket.mode == MAV_MODE_UNINIT && _syspacket.nav_mode == MAV_NAV_GROUNDED)
-                    value.c = PSTR("STARTUP");
-                  else
-                    value.c = PSTR("??MODE??");
+                	switch (_syspacket.mode) {
+                	case MAV_MODE_MANUAL:
+                        value.c = (PSTR("MANUAL"));
+                        break;
+                	case MAV_MODE_GUIDED:
+                        value.c = (PSTR("GUIDED"));
+                        break;
+                	case MAV_MODE_TEST1:
+                        value.c = (PSTR("STABILIZE"));
+                        break;
+                	case MAV_MODE_TEST2:
+                		switch (_syspacket.nav_mode) {
+                		case 1:
+                            value.c = (PSTR("FBW A"));
+                            break;
+                		case 2:
+                            value.c = (PSTR("FBW B"));
+                            break;
+                		default:
+                			value.c = (PSTR("??TEST??"));
+                		}
+                		break;
+                	case MAV_MODE_AUTO:
+                		switch (_syspacket.nav_mode) {
+                		case MAV_NAV_LOITER:
+                            value.c = (PSTR("LOITER"));
+                            break;
+                		case MAV_NAV_WAYPOINT:
+                			value.c = (PSTR("AUTO"));
+                			break;
+                		case MAV_NAV_RETURNING:
+                            value.c = (PSTR("RTL"));
+                            break;
+                		default:
+                            value.c = PSTR("??AUTO??");
+                		}
+                		break;
+					case MAV_MODE_UNINIT:
+						if (_syspacket.nav_mode == MAV_NAV_GROUNDED)
+							value.c = PSTR("STARTUP");
+						else
+							value.c = PSTR("??UNINIT");
+						break;
+					default:
+						value.c = PSTR("??MODE??");
+                	}
                 }
                 break;
 //        case V_TIME:
@@ -359,7 +374,7 @@ Markup::_substitute(uint8_t key)
         case V_WPHCOUNT:
                 fieldWidth = 2;
                 if (available) {
-                  value.u = _pktWptCount.count;
+                  value.u = _pktWptCount.count-1; // Minus one as we don't count home (0)
                   format = UNSIGNED;
                 }
                 break;
@@ -400,9 +415,9 @@ Markup::_substitute(uint8_t key)
                 if (available) {
                   //value.s = _valueBerr.value / 100;
                 	///XXX Need to add bearing error calculation here
-                	value.s = 2;
-                  if (value.s > 180)
-                    value.s = value.s-360;
+                	value.s = (uint32_t)_pktCurrWpt.param4;
+//                  if (value.s > 180)
+//                    value.s = value.s-360;
                   format = SIGNED;
                 }
                 break;
@@ -414,10 +429,10 @@ Markup::_substitute(uint8_t key)
                   // Calculates the distance between the waypoint and the current location - move to function?
                   // Gives 2D distance, altitude isn't taken into account, yet...
                   // Convert to radians
-                  float lat1 = _pktCurrWpt.param3/10000000.0 * 0.0174532925;
-                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
-                  float long1 = _pktCurrWpt.param4/10000000.0 * 0.0174532925;
-                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
+                  float lat1 = _pktCurrWpt.x * 0.0174532925; //10000000.0
+                  float lat2 = _gpspacket.lat * 0.0174532925;
+                  float long1 = _pktCurrWpt.y * 0.0174532925;
+                  float long2 = _gpspacket.lon * 0.0174532925;
 
                   // Find difference
                   float dlat = lat2 - lat1;
@@ -435,11 +450,15 @@ Markup::_substitute(uint8_t key)
                 fieldWidth = 4;
                 if (available) {
                   // Gives 2D distance from home, altitude isn't taken into account, yet...
-                  // Convert to radians
-                  float lat1 = _pktHomeWpt.param3/10000000.0 * 0.0174532925;
-                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
-                  float long1 = _pktHomeWpt.param4/10000000.0 * 0.0174532925;
-                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
+                  float lat1 = _pktHomeWpt.x * 0.0174532925;
+                  float lat2 = _gpspacket.lat * 0.0174532925;
+                  float long1 = _pktHomeWpt.y * 0.0174532925;
+                  float long2 = _gpspacket.lon * 0.0174532925;
+
+//                  Serial.println(lat1,DEC);
+//                  Serial.println(lat2,DEC);
+//                  Serial.println(long1,DEC);
+//                  Serial.println(long2,DEC);
 
                   // Find difference
                   float dlat = lat2 - lat1;
@@ -463,10 +482,10 @@ Markup::_substitute(uint8_t key)
                   // Based upon 2D distance, altitude isn't taken into account, yet...
 
                   // Convert to radians
-                  float lat1 = _pktCurrWpt.param3/10000000.0 * 0.0174532925;
-                  float lat2 = _gpspacket.lat/10000000.0 * 0.0174532925;
-                  float long1 = _pktCurrWpt.param4/10000000.0 * 0.0174532925;
-                  float long2 = _gpspacket.lon/10000000.0 * 0.0174532925;
+                  float lat1 = _pktCurrWpt.x * 0.0174532925;
+                  float lat2 = _gpspacket.lat * 0.0174532925;
+                  float long1 = _pktCurrWpt.y * 0.0174532925;
+                  float long2 = _gpspacket.lon * 0.0174532925;
 
                   // Find difference
                   float dlat = lat2 - lat1;
@@ -478,8 +497,8 @@ Markup::_substitute(uint8_t key)
                             sin(dlong / 2.0) * sin(dlong / 2.0);
                   value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
 
-                  // Calculate speed
-                  value.u /= _gpspacket.v / 100;
+                  // Calculate time
+                  value.u /= _gpspacket.v;
                   format = UNSIGNED;
                 }
                 else
@@ -631,10 +650,12 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
 
         case MAVLINK_MSG_ID_WAYPOINT_CURRENT:
             mavlink_msg_waypoint_current_decode((mavlink_message_t*)buf, &_pktCurrWptNum);
+            _availability[0] |= AVAIL_WP_CURR;
+
+        	mavlink_message_t msg;
             // If the waypoint has changed, ask more info about it
             if (_pktCurrWptNum.seq != _currWpt) {
             	_currWpt = _pktCurrWptNum.seq;
-            	mavlink_message_t msg;
             	mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, _currWpt);
             	comm.send(&msg);
             	if (!_available(V_WPCOUNT)) {
@@ -642,7 +663,11 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
             		comm.send(&msg);
             	}
             }
-            _availability[0] |= AVAIL_WP_CURR;
+            // If we don't know where home is, ask
+            if (!_available(V_HOMEDIST)) {
+            	mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, 0);
+            	comm.send(&msg);
+            }
             break;
         case MAVLINK_MSG_ID_WAYPOINT_COUNT:
             mavlink_msg_waypoint_count_decode((mavlink_message_t*)buf, &_pktWptCount);
@@ -652,25 +677,27 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
         case MAVLINK_MSG_ID_WAYPOINT:
         	mavlink_msg_waypoint_decode(buf, &_pktTempWpt);
         	// Home
-        	if (_pktCurrWpt.seq == 0) {
+        	if (_pktTempWpt.seq == 0) {
             	mavlink_msg_waypoint_decode(buf, &_pktHomeWpt);
                 _availability[1] |= AVAIL_COMMANDHOME;
 
                 // pretend also current waypoint for now
-            	mavlink_msg_waypoint_decode(buf, &_pktCurrWpt);
-                _availability[1] |= AVAIL_COMMAND;
+//            	mavlink_msg_waypoint_decode(buf, &_pktCurrWpt);
+//                _availability[1] |= AVAIL_COMMAND;
 			}
             // Current
-        	else if (_pktCurrWpt.seq == _currWpt) {
+        	else if (_pktTempWpt.seq == _currWpt) {
             	mavlink_msg_waypoint_decode(buf, &_pktCurrWpt);
                 _availability[1] |= AVAIL_COMMAND;
-            	PrintPSTR(PSTR("Been told about about current waypoint "));
-            	Serial.println(_pktCurrWpt.seq,DEC);
+//            	PrintPSTR(PSTR("Been told about about current waypoint "));
+//            	Serial.println(_pktCurrWpt.seq,DEC);
 			}
             // Other
         	else {
-            	PrintPSTR(PSTR("Been told about about waypoint "));
-            	Serial.println(_pktTempWpt.seq,DEC);
+//            	PrintPSTR(PSTR("Been told about about waypoint "));
+//            	Serial.println(_pktTempWpt.seq,DEC);
+//            	PrintPSTR(PSTR("Whilst heading for waypoint "));
+//            	Serial.println(_currWpt,DEC);
         	}
 
 //            PrintPSTR(PSTR("Current Waypoint "));

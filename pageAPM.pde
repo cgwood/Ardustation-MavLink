@@ -172,7 +172,7 @@ PageAPMSetup::_render(void)
              else {
                  j = _Types[i];
                  nvram.load_param(&j,&value_local);
-                 value = (uint32_t)value_local;
+                 value = (uint32_t)floor(value_local+0.5);
              }
               //value = _value_live[i].value;
               
