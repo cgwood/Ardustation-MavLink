@@ -105,12 +105,12 @@ private:
         uint8_t _currWpt;
         mavlink_sys_status_t _syspacket;
         mavlink_attitude_t _attpacket;
-        mavlink_gps_raw_t _gpspacket;
+//        mavlink_gps_raw_t _gpspacket;
 //        uint8_t _num_sats;
 //        mavlink_gps_status_t _gpsstatus;
 //        mavlink_raw_pressure_t _prepacket;
         mavlink_waypoint_current_t _pktCurrWptNum;
-        mavlink_waypoint_count_t _pktWptCount;
+//        mavlink_waypoint_count_t _pktWptCount;
         mavlink_waypoint_t _pktCurrWpt;
         mavlink_waypoint_t _pktHomeWpt;
         mavlink_waypoint_t _pktTempWpt;

@@ -72,7 +72,15 @@ void setup()
                 Serial.println(freemem);
         }
         
+        // Set the waypoint count to zero
+        mavWptCount.count = 0;
         
+        // Set the home position to zero
+        gcsLat = 0;
+        gcsLon = 0;
+        gcsAlt = 0;
+
+
 //        uint8_t i;
 //        float param_value;
 //
@@ -107,6 +115,9 @@ void loop()
 
         // update the link status bug & alarm
         watchdog.check();
+
+        // update the antenna tracker
+//        tracker.update();
 
         // update the currently-playing tune
         beep.update();

@@ -44,6 +44,8 @@
 #include "utils.h"
 #include "watchdog.h"
 #include "params.h"
+//#include <Servo.h>
+//#include "tracker.h"
 
 // complex pages
 #include "alert.h"
@@ -80,11 +82,18 @@ Watchdog        watchdog;                       ///< message receipt watchdog
 NVRAM           nvram;                          ///< NVRAM driver
 Markup          markup;                         ///< page markup engine
 Beep            beep(TONE_PIN);                 ///< tune machine
-Parameters      params;                       ///< parameter access
+Parameters      params;                         ///< parameter access
+//Tracker			tracker;						///< Antenna tracker
 
 PagePicker      pickerPage;                     ///< picker widget
 PageSetup       setupPage;                      ///< setup page
 //PageAlert       alertPage;                      ///< alert message viewer
+
+mavlink_waypoint_count_t mavWptCount;        ///< Number of waypoints
+mavlink_gps_raw_t        mavGPS;             ///< Current location info
+float           gcsLat;                      ///< Latitude of GCS
+float           gcsLon;                      ///< Longitude of GCS
+float           gcsAlt;                      ///< Altitude of GCS
 
 
 // APM Settings page
@@ -183,7 +192,7 @@ PageText        welcomePage(aboutMessage, PAGE_BANNER_TIMEOUT);
 /// Format string for the summary page - see the markup module for
 /// a discussion of these codes.
 PROGMEM const prog_char summaryPageFormat[] =
-        "\x81    \x6\x83V\n"
+        "\x81   \x6\x83V\n"
 //		" \x84 \x85 \x8f \x82\n"
 		"\x84 \x85 \x86 \x8f\n"
         " \x89m  \x8ams\x5  \x8b\x80\xdf\n"
@@ -194,11 +203,17 @@ PageStatus      summaryPage(summaryPageFormat); ///< a page with some data
 
 /// Format string for Mission page
 PROGMEM const prog_char MissionPageFormat[] =
-        "\x81   #\x8e/\x9a\n"
-        "\x93  ETA \x96s\n"
-        "Dist \x95m BRNG\x94\x80\xdf\n"
+        "\x81   \x6\x83V\n"
+        "\x93  #\x8e/\x92\n"
+        "Dist \x95m  ETA \x96s\n"
         "Home \x9fm Vel\x8ams\x5\n"
         "";
+//PROGMEM const prog_char MissionPageFormat[] =
+//        "\x81   #\x8e/\x9a\n"
+//        "\x93  ETA \x96s\n"
+//        "Dist \x95m BRNG\x94\x80\xdf\n"
+//        "Home \x9fm Vel\x8ams\x5\n"
+//        "";
 PageStatus      MissionPage(MissionPageFormat); ///< a page with some data
 
        
@@ -237,6 +252,7 @@ MAVComm::MessageHandler msgHandlers[] = {
         {MAVLINK_MSG_ID_WAYPOINT_CURRENT, Markup::message,   &markup},
         {MAVLINK_MSG_ID_WAYPOINT_COUNT,   Markup::message,   &markup},
         {MAVLINK_MSG_ID_WAYPOINT,         Markup::message,   &markup},
+//        {MAVLINK_MSG_ID_WAYPOINT,         Tracker::notify,   &tracker},
 //        {MAVLINK_MSG_ID_PARAM_VALUE, Markup::message,   &markup},
 
         // Messages that cause the summary page to update.

@@ -205,9 +205,9 @@ PageCommands::_commandSend(void)
 	switch (_state - 201)
 	{
 	case 0: // Reset waypoint index
-		mavlink_msg_waypoint_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
-//		mavlink_msg_waypoint_count_pack(0xFF, 0xFA, &msg, 1, 1, 1);
-//		mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, 0);
+//		mavlink_msg_waypoint_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+		// Restart the mission by setting the current waypoint to waypoint 1
+		mavlink_msg_waypoint_set_current_pack(0xFF, 0xFA, &msg, 1, 1, 1);
 		comm.send(&msg);
 		break;
 	case 1: // Request parameters
@@ -222,8 +222,23 @@ PageCommands::_commandSend(void)
 		comm.request();
 		break;
 	case 4: // GCS Home
+		gcsLat = mavGPS.lat;
+		gcsLon = mavGPS.lon;
+		gcsAlt = mavGPS.alt;
 		break;
 	case 5: // UAV Home
+//		mavlink_msg_command_pack(0xFF, 0xFA, &msg, 1, 1, MAV_CMD_DO_SET_HOME, 0, 1, 0, 0, 0);
+		// uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, uint8_t target_system, uint8_t target_component, uint16_t seq, uint8_t frame, uint8_t command, uint8_t current, uint8_t autocontinue, float param1, float param2, float param3, float param4, float x, float y, float z)
+		if (mavWptCount.count != 0) {
+			mavlink_msg_waypoint_count_pack(0xFF, 0xFA, &msg, 1, 1, mavWptCount.count);
+			comm.send(&msg);
+//			mavlink_msg_waypoint_pack(0xFF, 0xFA, &msg, 1, 1, 0, MAV_FRAME_GLOBAL, MAV_CMD_DO_SET_HOME, 0, 0, 1, 0, 0, 0, 0, 0, 0);
+			mavlink_msg_waypoint_pack(0xFF, 0xFA, &msg, 1, 1, 0, MAV_FRAME_GLOBAL, MAV_CMD_NAV_WAYPOINT, 1, 1, 0, 0, 0, 0, mavGPS.lat, mavGPS.lon, mavGPS.alt);
+			comm.send(&msg);
+			delay(50);
+        	mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, 0);
+        	comm.send(&msg);
+		}
 		break;
 	}
 

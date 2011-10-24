@@ -236,7 +236,7 @@ Markup::_substitute(uint8_t key)
                 if (available) {
                         format = UNSIGNED;
                         decPos = 1;
-                        value.u = _syspacket.vbat / 10;
+                        value.u = _syspacket.vbat / 100;
                 }
                 break;
         case V_VLOCAL:
@@ -264,7 +264,7 @@ Markup::_substitute(uint8_t key)
           fieldWidth = 7;
           if (available) {
             format = STRING;
-            switch (_gpspacket.fix_type) {
+            switch (mavGPS.fix_type) {
               case 0:
                 value.c = PSTR("NO FIX");
                 break;
@@ -280,7 +280,7 @@ Markup::_substitute(uint8_t key)
               default:
                 value.c = PSTR("BADGPS");
             }
-            //value.u = _gpspacket.fix_type;
+            //value.u = mavGPS.fix_type;
           }
           break;
         case V_ROLL:
@@ -316,7 +316,7 @@ Markup::_substitute(uint8_t key)
                 if (available) {
                         format = SIGNED;
                         decPos = 5;
-                        value.s = _gpspacket.lat*1e5;
+                        value.s = mavGPS.lat*1e5;
                 }
                 break;
         case V_LONGITUDE:
@@ -324,14 +324,14 @@ Markup::_substitute(uint8_t key)
                 if (available) {
                         format = SIGNED;
                         decPos = 5;
-                        value.s = _gpspacket.lon*1e5;
+                        value.s = mavGPS.lon*1e5;
                 }
                 break;
         case V_ALTITUDE:
                 fieldWidth = 4;
                 if (available) {
                         format = SIGNED;
-                        value.s = constrain((_gpspacket.alt), -999, 9999);
+                        value.s = constrain((mavGPS.alt), -999, 9999);
                 }
                 break;
         case V_P_ALTITUDE:
@@ -351,14 +351,14 @@ Markup::_substitute(uint8_t key)
                 if (available) {
                         format = UNSIGNED;
                         // Groundspeed is unsigned
-                        value.u = constrain(_gpspacket.v, 0, 999);
+                        value.u = constrain(mavGPS.v, 0, 999);
                 }
                 break;
         case V_GROUNDCOURSE:
                 fieldWidth = 3;
                 if (available) {
                         format = UNSIGNED;
-                        value.u = constrain(_gpspacket.hdg, 0, 359);
+                        value.u = constrain(mavGPS.hdg, 0, 359);
                 }
                 break;
 
@@ -371,10 +371,10 @@ Markup::_substitute(uint8_t key)
                   format = UNSIGNED;
                 }
                 break;
-        case V_WPHCOUNT:
+        case V_WPCOUNT:
                 fieldWidth = 2;
                 if (available) {
-                  value.u = _pktWptCount.count-1; // Minus one as we don't count home (0)
+                  value.u = mavWptCount.count-1; // Minus one as we don't count home (0)
                   format = UNSIGNED;
                 }
                 break;
@@ -430,9 +430,9 @@ Markup::_substitute(uint8_t key)
                   // Gives 2D distance, altitude isn't taken into account, yet...
                   // Convert to radians
                   float lat1 = _pktCurrWpt.x * 0.0174532925; //10000000.0
-                  float lat2 = _gpspacket.lat * 0.0174532925;
+                  float lat2 = mavGPS.lat * 0.0174532925;
                   float long1 = _pktCurrWpt.y * 0.0174532925;
-                  float long2 = _gpspacket.lon * 0.0174532925;
+                  float long2 = mavGPS.lon * 0.0174532925;
 
                   // Find difference
                   float dlat = lat2 - lat1;
@@ -451,9 +451,9 @@ Markup::_substitute(uint8_t key)
                 if (available) {
                   // Gives 2D distance from home, altitude isn't taken into account, yet...
                   float lat1 = _pktHomeWpt.x * 0.0174532925;
-                  float lat2 = _gpspacket.lat * 0.0174532925;
+                  float lat2 = mavGPS.lat * 0.0174532925;
                   float long1 = _pktHomeWpt.y * 0.0174532925;
-                  float long2 = _gpspacket.lon * 0.0174532925;
+                  float long2 = mavGPS.lon * 0.0174532925;
 
 //                  Serial.println(lat1,DEC);
 //                  Serial.println(lat2,DEC);
@@ -477,15 +477,15 @@ Markup::_substitute(uint8_t key)
                 break;
         case V_WPETA:
                 fieldWidth = 3;
-                if (available && _gpspacket.v > 0) {
+                if (available && mavGPS.v > 0) {
                   // Calculates the ETA, based upon distance and speed, assuming we're on track
                   // Based upon 2D distance, altitude isn't taken into account, yet...
 
                   // Convert to radians
                   float lat1 = _pktCurrWpt.x * 0.0174532925;
-                  float lat2 = _gpspacket.lat * 0.0174532925;
+                  float lat2 = mavGPS.lat * 0.0174532925;
                   float long1 = _pktCurrWpt.y * 0.0174532925;
-                  float long2 = _gpspacket.lon * 0.0174532925;
+                  float long2 = mavGPS.lon * 0.0174532925;
 
                   // Find difference
                   float dlat = lat2 - lat1;
@@ -498,7 +498,7 @@ Markup::_substitute(uint8_t key)
                   value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
 
                   // Calculate time
-                  value.u /= _gpspacket.v;
+                  value.u /= mavGPS.v;
                   format = UNSIGNED;
                 }
                 else
@@ -626,7 +626,7 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
             break;
 
         case MAVLINK_MSG_ID_GPS_RAW:
-            mavlink_msg_gps_raw_decode((mavlink_message_t*)buf, &_gpspacket);
+            mavlink_msg_gps_raw_decode((mavlink_message_t*)buf, &mavGPS);
             _availability[0] |= AVAIL_LOCATION;
             break;
 
@@ -653,15 +653,16 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
             _availability[0] |= AVAIL_WP_CURR;
 
         	mavlink_message_t msg;
+        	// If we don't know how many waypoints there are, ask
+        	if (!_available(V_WPCOUNT)) {
+        		mavlink_msg_waypoint_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+        		comm.send(&msg);
+        	}
             // If the waypoint has changed, ask more info about it
             if (_pktCurrWptNum.seq != _currWpt) {
             	_currWpt = _pktCurrWptNum.seq;
             	mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, _currWpt);
             	comm.send(&msg);
-            	if (!_available(V_WPCOUNT)) {
-            		mavlink_msg_waypoint_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
-            		comm.send(&msg);
-            	}
             }
             // If we don't know where home is, ask
             if (!_available(V_HOMEDIST)) {
@@ -670,7 +671,7 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
             }
             break;
         case MAVLINK_MSG_ID_WAYPOINT_COUNT:
-            mavlink_msg_waypoint_count_decode((mavlink_message_t*)buf, &_pktWptCount);
+            mavlink_msg_waypoint_count_decode((mavlink_message_t*)buf, &mavWptCount);
             _availability[1] |= AVAIL_WP_COUNT;
             break;
             
