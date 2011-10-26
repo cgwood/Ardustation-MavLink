@@ -78,7 +78,7 @@ MAVComm::_handleMessage(mavlink_message_t* msg)
 {
 	uint8_t         tableIndex;
 	// call any handler interested in this message
-	for (tableIndex = 0; tableIndex < 23; tableIndex++) { //MSG_NULL != _handlerTable[tableIndex].messageID; tableIndex++) {
+	for (tableIndex = 0; tableIndex < 24; tableIndex++) { //MSG_NULL != _handlerTable[tableIndex].messageID; tableIndex++) {
 		if(_handlerTable[tableIndex].messageID == MSG_ANY ||
 		   _handlerTable[tableIndex].messageID == msg->msgid ) {
 			_handlerTable[tableIndex].handler(_handlerTable[tableIndex].arg, msg); //msg->msgid, 1,

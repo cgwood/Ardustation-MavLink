@@ -170,13 +170,13 @@ const uint8_t   pidTypesNav[] = {0x03, 0x04, 0x06};     ///< PID id numbers as p
 PagePIDSetup    NavPidPage(pidHeaderNav,pidTypesNav,nav_pid_p,nav_pid_i,nav_pid_d);   ///< PID Setup page for Navigation
 
 
-/// the PID setup page confirmation message
+/// the PID / APM setup page confirmation message
 PROGMEM const prog_char confirmMessage[] =
       //01234567890123456789
-       "  This will save\n"
+       "This will apply the\n"
        "changes made to the\n"
-       "PID Settings, press\n"
-       "   OK to Upload";
+       " settings, press\n"
+       "  OK to Upload";
 //PageText        PidConfirmPage(confirmMessage, PAGE_CONFIRM_TIMEOUT);    ///< PID Upload confirmation page
 
 
@@ -252,7 +252,6 @@ MAVComm::MessageHandler msgHandlers[] = {
         {MAVLINK_MSG_ID_WAYPOINT_COUNT,   Markup::message,   &markup},
         {MAVLINK_MSG_ID_WAYPOINT,         Markup::message,   &markup},
 //        {MAVLINK_MSG_ID_WAYPOINT,         Tracker::notify,   &tracker},
-//        {MAVLINK_MSG_ID_PARAM_VALUE, Markup::message,   &markup},
 
         // Messages that cause the summary page to update.
         {MAVLINK_MSG_ID_HEARTBEAT,   PageStatus::notify,     &summaryPage},
@@ -260,18 +259,22 @@ MAVComm::MessageHandler msgHandlers[] = {
         {MAVLINK_MSG_ID_GPS_RAW,     PageStatus::notify,     &summaryPage},
         {MAVLINK_MSG_ID_GPS_STATUS,  PageStatus::notify,     &summaryPage},
         {MAVLINK_MSG_ID_SYS_STATUS,  PageStatus::notify,     &summaryPage},
-        // Messages that cause the PID summary page to update
+
+        // Messages that cause the parameter pages to update
         {MAVLINK_MSG_ID_PARAM_VALUE, PagePIDSetup::notify,   &PidPage},
-        {MAVLINK_MSG_ID_PARAM_VALUE, Parameters::notify,   &params},
-        // Messages that cause the APM Settings page to update
+        {MAVLINK_MSG_ID_PARAM_VALUE, PagePIDSetup::notify,   &NavPidPage},
         {MAVLINK_MSG_ID_PARAM_VALUE, PageAPMSetup::notify,   &APMPage},
+
+        // Messages that cause the parameter storage to update
+        {MAVLINK_MSG_ID_PARAM_VALUE, Parameters::notify,     &params},
+
         // Messages that cause the Mission page to update 
-        {MAVLINK_MSG_ID_HEARTBEAT, PageStatus::notify,     &MissionPage},
-        {MAVLINK_MSG_ID_COMMAND,   PageStatus::notify,     &MissionPage},
+        {MAVLINK_MSG_ID_HEARTBEAT,        PageStatus::notify,     &MissionPage},
+        {MAVLINK_MSG_ID_COMMAND,          PageStatus::notify,     &MissionPage},
         {MAVLINK_MSG_ID_WAYPOINT_CURRENT, PageStatus::notify,     &MissionPage},
-        {MAVLINK_MSG_ID_WAYPOINT_COUNT, PageStatus::notify,     &MissionPage},
-        {MAVLINK_MSG_ID_WAYPOINT, PageStatus::notify,     &MissionPage},
-        {MAVLINK_MSG_ID_GPS_RAW,   PageStatus::notify,     &MissionPage},
+        {MAVLINK_MSG_ID_WAYPOINT_COUNT,   PageStatus::notify,     &MissionPage},
+        {MAVLINK_MSG_ID_WAYPOINT,         PageStatus::notify,     &MissionPage},
+        {MAVLINK_MSG_ID_GPS_RAW,          PageStatus::notify,     &MissionPage},
         // Messages that cause the alert page to update
 //        {MAVLINK_MSG_ID_SYS_STATUS, PageAlert::notify,     &alertPage},
         {MSG_NULL,      NULL}

@@ -423,7 +423,7 @@ Markup::_substitute(uint8_t key)
                 break;
         case V_WPDIST:
                 fieldWidth = 4;
-                if (available) {
+                if (available && _pktCurrWpt.command != MAV_CMD_NAV_TAKEOFF) {
                 	/// XXX Make a function find_distance
                   /// @bug Assumes that we have the current location available, which is normally reasonable
                   // Calculates the distance between the waypoint and the current location - move to function?
@@ -445,6 +445,8 @@ Markup::_substitute(uint8_t key)
                   value.u = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
                   format = UNSIGNED;
                 }
+                else
+                  value.c = PSTR("----");
                 break;
         case V_HOMEDIST:
                 fieldWidth = 4;
@@ -477,7 +479,7 @@ Markup::_substitute(uint8_t key)
                 break;
         case V_WPETA:
                 fieldWidth = 3;
-                if (available && mavGPS.v > 0) {
+                if (available && mavGPS.v > 0 && _pktCurrWpt.command != MAV_CMD_NAV_TAKEOFF) {
                   // Calculates the ETA, based upon distance and speed, assuming we're on track
                   // Based upon 2D distance, altitude isn't taken into account, yet...
 
