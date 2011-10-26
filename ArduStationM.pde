@@ -34,7 +34,6 @@
 #include <EEPROM.h>
 #include <GCS_MAVLink.h>
 #include "mavlink.h"
-#include "vartypes.h"
 #include "beep.h"
 #include "buttons.h"
 #include "hardware.h"
@@ -44,11 +43,11 @@
 #include "utils.h"
 #include "watchdog.h"
 #include "params.h"
+
+// currently unused
 //#include <Servo.h>
 //#include "tracker.h"
-
-// complex pages
-#include "alert.h"
+//#include "alert.h"
 
 #define MSG_ANY  1010
 #define MSG_NULL 9090
@@ -185,7 +184,7 @@ PROGMEM const prog_char confirmMessage[] =
 PROGMEM const prog_char aboutMessage[] =
        "  ArduPilot Mega\n"
        "  groundstation\n"
-       "  Ver. 23 Oct 2011";
+       "  Ver. 26 Oct 2011";
 /// banner displayed at startup
 PageText        welcomePage(aboutMessage, PAGE_BANNER_TIMEOUT);
 

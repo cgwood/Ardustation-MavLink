@@ -1,8 +1,6 @@
 // Created 2011 By Colin G http://www.diydrones.com/profile/ColinG
 
-/// XXX
-// These are mostly not used, but were defined to ease the transition between BinComm and MavLink
-// Working to remove this file
+// This file is no longer used, but was created to define variables to ease the transition between BinComm and MavLink
 
 struct msg_status_text {
 	uint8_t severity;
