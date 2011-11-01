@@ -665,6 +665,11 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
             	_currWpt = _pktCurrWptNum.seq;
             	mavlink_msg_waypoint_request_pack(0xFF, 0xFA, &msg, 1, 1, _currWpt);
             	comm.send(&msg);
+            	// Alert the user
+            	if (_available(V_WPCOUNT) && _currWpt == mavWptCount.count + 1)
+            		beep.play(BEEP_RTL);
+            	else
+            		_beepWpt = 1;
             }
             // If we don't know where home is, ask
             if (!_available(V_HOMEDIST)) {
@@ -692,8 +697,21 @@ Markup::_message(mavlink_message_t *buf) //uint8_t messageID, uint8_t messageVer
         	else if (_pktTempWpt.seq == _currWpt) {
             	mavlink_msg_waypoint_decode(buf, &_pktCurrWpt);
                 _availability[1] |= AVAIL_COMMAND;
-//            	PrintPSTR(PSTR("Been told about about current waypoint "));
-//            	Serial.println(_pktCurrWpt.seq,DEC);
+                // Beep at the user
+                if (_beepWpt) {
+                	switch (_pktCurrWpt.command) {
+                	case MAV_CMD_NAV_WAYPOINT:
+                		beep.play(BEEP_WAYPOINT);
+                		break;
+                	case MAV_CMD_NAV_LAND:
+                		beep.play(BEEP_LAND);
+                		break;
+                	case MAV_CMD_NAV_RETURN_TO_LAUNCH:
+                		beep.play(BEEP_RTL);
+                		break;
+                	}
+                	_beepWpt = 0;
+                }
 			}
             // Other
         	else {

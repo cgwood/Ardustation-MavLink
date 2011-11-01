@@ -87,7 +87,7 @@
 
 class Markup {
 public:
-        Markup() {_cmdbufpos=0;_voltage=0;_currWpt=10;};
+        Markup() {_cmdbufpos=0;_voltage=0;_currWpt=10;_beepWpt=0;};
 
         void            emit(const prog_char *str);
         static void     message(void *arg, mavlink_message_t *buf); //, uint8_t messageID, uint8_t messageVersion
@@ -103,6 +103,7 @@ private:
         uint16_t _voltage;
         uint8_t _satcount;
         uint8_t _currWpt;
+        bool	_beepWpt;
         mavlink_sys_status_t _syspacket;
         mavlink_attitude_t _attpacket;
 //        mavlink_gps_raw_t _gpspacket;

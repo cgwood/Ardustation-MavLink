@@ -184,7 +184,7 @@ PROGMEM const prog_char confirmMessage[] =
 PROGMEM const prog_char aboutMessage[] =
        "  ArduPilot Mega\n"
        "  groundstation\n"
-       "  Ver. 26 Oct 2011";
+       "  Ver. 29 Oct 2011";
 /// banner displayed at startup
 PageText        welcomePage(aboutMessage, PAGE_BANNER_TIMEOUT);
 

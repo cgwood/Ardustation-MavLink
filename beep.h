@@ -33,6 +33,10 @@
 #define BEEP_NOTICE     1
 #define BEEP_CONNECTED  2
 // 3-5 spare
+#define BEEP_WAYPOINT	3
+#define BEEP_LAND		4
+#define BEEP_RTL		5
+//
 #define BEEP_BADKEY     6
 #define BEEP_KEY        7
 #define BEEP_PACKET     8
@@ -42,7 +46,7 @@
 #define BEEP_NONE       255     ///< Sentinel value in _playing to indicate no tune currently playing
 
 #define BEEP_TUNES_MAX  10      ///< maximum number of tunes
-#define BEEP_TUNE_MAX   8       ///< maximum notes in a tune
+#define BEEP_TUNE_MAX   4       ///< maximum notes in a tune
 
 #define BEEP_MUTE_MIN   0       ///< codes less than this cannot be muted
 

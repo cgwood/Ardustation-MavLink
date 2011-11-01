@@ -28,16 +28,16 @@
 /// @brief      audio feedback
 
 PROGMEM const Beep::note Beep::_tune[BEEP_TUNES_MAX][BEEP_TUNE_MAX] = {
-        {{2300, 300}, {0, 0}},                  // BEEP_CRITICAL
-        {{500, 100}, {0, 0}},                   // BEEP_NOTICE
+        {{2300, 300}, {0, 0}},                          // BEEP_CRITICAL
+        {{500, 100}, {0, 0}},                           // BEEP_NOTICE
         {{659, 100}, {659, 100}, {880, 300}, {0, 0}},   // BEEP_CONNECTED
-        {{0, 0}},                               // 3
-        {{0, 0}},                               // 4
-        {{0, 0}},                               // 5
-        {{300, 200}, {0, 0}},                   // BEEP_BADKEY
-        {{1000, 100}, {0, 0}},                  // BEEP_KEY
-        {{4000, 5}, {0, 0}},                    // BEEP_PACKET
-        {{880, 100}, {831, 100}, {880, 100}, {0, 0}},    // BEEP_STARTUP
+        {{800, 100}, {800, 100}, {0, 0}},               // BEEP_WAYPOINT
+        {{1200, 250}, {750, 250}, {300, 250}, {0, 0}},  // BEEP_LAND
+        {{831, 100}, {880, 100}, {880, 100}, {0, 0}},   // BEEP_RTL
+        {{300, 200}, {0, 0}},                           // BEEP_BADKEY
+        {{1000, 50}, {0, 0}},                           // BEEP_KEY
+        {{4000, 5}, {0, 0}},                            // BEEP_PACKET
+        {{880, 100}, {831, 100}, {880, 100}, {0, 0}},   // BEEP_STARTUP
 };
 
 void

@@ -64,7 +64,10 @@ Watchdog::check(void)
                         // is it time to sound the alarm beep again?
                         if ((millis() - _lastAlarm) > MESSAGE_ALARM_RATE) {
                                 _lastAlarm = millis();
-                                beep.play(BEEP_CRITICAL);
+
+                                // Only beep if packet tones are on:
+                                if (nvram.nv.packetSounds)
+                                	beep.play(BEEP_CRITICAL);
 
                                 // toggle the bug glyph between "where is the link" and "hey you!"
                                 if (_alarmInvert) {

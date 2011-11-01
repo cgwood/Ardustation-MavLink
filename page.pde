@@ -505,8 +505,8 @@ PageSetup::_enter(uint8_t fromPage)
                 PagePicker::printValueForIndex(nvram.nv.muted, setupPickMute);
 
                 lcd.setCursor(0, 1);
-//                lcd.print(" Packet tones  ");
-                lcdPrintPSTR(PSTR(" Packet tones  "));
+//              lcdPrintPSTR(PSTR(" Packet tones  "));
+                lcdPrintPSTR(PSTR(" LostLink tone "));
                 PagePicker::printValueForIndex(nvram.nv.packetSounds, setupPickOnOff);
 
                 // Serial port speed setup
