@@ -168,11 +168,14 @@ PageAPMSetup::_render(void)
           if (_avail[i] == 1) {
             // Load the value, either editing or live val
             if (i == (_state-101))
-              value = _value_temp;
+              value = fabs(_value_temp);
              else {
                  j = _Types[i];
                  nvram.load_param(&j,&value_local);
-                 value = (uint32_t)floor(value_local+0.5);
+//                 if (value_local < 0)
+//                	 value = (uint32_t)floor(-value_local+0.5);
+//                 else
+                 value = (uint32_t)floor(fabs(value_local)+0.5);
              }
               //value = _value_live[i].value;
               
@@ -270,10 +273,18 @@ PageAPMSetup::_alterLocal(float alterMag)
 //  }
 //  else {
     // We don't do negative values here
-    if (_value_temp + alterMag < 0)
-      _value_temp = 0;
-    else
-      _value_temp += alterMag;
+	if (_value_temp >= 0) {
+		if (_value_temp + alterMag < 0)
+		  _value_temp = 0;
+		else
+		  _value_temp += alterMag;
+	}
+	else {
+		if (_value_temp + alterMag > 0)
+		  _value_temp = 0;
+		else
+		  _value_temp -= alterMag;
+	}
 //  }
     
   // kick the update function
@@ -318,10 +329,15 @@ void
 PageAPMSetup::_uploadLocal(void)
 {
 	uint8_t j;
+//	float value_local;
 
 	// Send the value that we edited
 	j = _Types[_state-201];
-	params.set_param(j, _value_temp);
+//	nvram.load_param(&j,&value_local);
+//	if (value_local < 0)
+//		params.set_param(j, -_value_temp);
+//	else
+		params.set_param(j, _value_temp);
     
 	// Reset _state
 	_state = 0;

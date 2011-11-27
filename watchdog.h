@@ -99,6 +99,9 @@ private:
         /// timestamp of the last alarm beep issued
         unsigned long   _lastAlarm;
 
+        /// timestamp of the last time the glyph was drawn
+        unsigned long   _lastRedraw;
+
         /// alarm glyph toggle
         bool            _alarmInvert;
 

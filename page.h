@@ -60,7 +60,7 @@
 
 // APM settings page vars
 #define APMNAMEFIELDWIDTH 12
-#define APMVALCOUNT 10
+#define APMVALCOUNT 17
 
 /// @class      Page
 /// @brief      abstract class describing one page in the menu tree

@@ -40,10 +40,11 @@ void
 NVRAM::load(void)
 {
         // check for signature
-        if (('m' != EEPROM.read(0)) ||
-            ('s' != EEPROM.read(1))) {
+        if (('c' != EEPROM.read(0)) ||
+            ('g' != EEPROM.read(1))) {
                 // load defaults
                 memcpy_P(&nv, &NVRAM_default, sizeof(nv));
+                _reset_params();
         } else {
                 // load from NVRAM
                 _loadx(2, sizeof(nv), &nv);
@@ -56,8 +57,8 @@ NVRAM::save(void)
         // save to NVRAM
         _savex(2, sizeof(nv), &nv);
 
-        EEPROM.write(0, 'm');
-        EEPROM.write(1, 's');
+        EEPROM.write(0, 'c');
+        EEPROM.write(1, 'g');
 }
 
 void
@@ -72,6 +73,17 @@ NVRAM::save_param(uint8_t *param_id, float *param_value)
 {
         // save to NVRAM
         _savex(2 + sizeof(nv) + *param_id*sizeof(float), sizeof(float), param_value);
+}
+
+void
+NVRAM::_reset_params(void)
+{
+	uint8_t i;
+
+	// Save a zero to NVRAM
+	for (i=0;i<Parameters::COUNT;i++) {
+		_savex(2 + sizeof(nv) + i*sizeof(float), sizeof(float), 0);
+	}
 }
 
 void
@@ -93,4 +105,3 @@ NVRAM::_savex(uint8_t address, uint8_t size, void *value)
         while (size--)
                 EEPROM.write(address++, *rp++);
 }
-

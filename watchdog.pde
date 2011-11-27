@@ -34,55 +34,58 @@ const uint8_t Watchdog::_linkLost[8] = {0x1b, 0x1b, 0x1b, 0x1b, 0x1b, 0x00, 0x1b
 void
 Watchdog::check(void)
 {
-        if (0 == _lastStamp) {
-                // we have never seen a packet
-                if ((millis() - _lastRequest) > REQUEST_RATE) {
-                  comm.request();
-                  _lastRequest = millis();
-                }
+	if (0 == _lastStamp) {
+		// we have never seen a packet
+		if ((millis() - _lastRequest) > REQUEST_RATE) {
+			comm.request();
+			_lastRequest = millis();
+		}
 
-                // Swap the bug character to "where is the link"
-                // Doing this every iteration is a bit wasteful, but we only do this while
-                // there is nothing else to do.
-                _bugWait();
-        } else {
-                if (0 == _lastAlarm) {
-                        // we are not currently in an alarm condition
+		// Swap the bug character to "where is the link"
+		// Doing this every iteration is a bit wasteful, but we only do this while
+		// there is nothing else to do.
+		_bugWait();
+	} else {
+		if (0 == _lastAlarm) {
+			// we are not currently in an alarm condition
 
-                        // if we have just timed out, next time around the alarm will sound
-                        if ((millis() - _lastStamp) > MESSAGE_TIMEOUT && (millis() - _lastGroundStamp) > GROUND_MESSAGE_TIMEOUT) {
-                                _lastAlarm = 1;
-                                _alarmInvert = true;
+			// if we have just timed out, next time around the alarm will sound
+			if ((millis() - _lastStamp) > MESSAGE_TIMEOUT && (millis() - _lastGroundStamp) > GROUND_MESSAGE_TIMEOUT) {
+				_lastAlarm = 1;
+				_alarmInvert = true;
 
-                                // XXX we should save the last GPS data here in NVRAM
-                                // for lost-model recovery purposes.
-                        }
-                                
-                } else {
-                        // we are currently in an alarm condition
+				// XXX we should save the last GPS data here in NVRAM
+				// for lost-model recovery purposes.
+			}
 
-                        // is it time to sound the alarm beep again?
-                        if ((millis() - _lastAlarm) > MESSAGE_ALARM_RATE) {
-                                _lastAlarm = millis();
+		} else {
+			// we are currently in an alarm condition
 
-                                // Only beep if packet tones are on:
-                                if (nvram.nv.packetSounds)
-                                	beep.play(BEEP_CRITICAL);
+			// is it time to sound the alarm beep again?
+			if ((millis() - _lastAlarm) > MESSAGE_ALARM_RATE) {
+				_lastAlarm = millis();
 
-                                // toggle the bug glyph between "where is the link" and "hey you!"
-                                if (_alarmInvert) {
-                                        _bugLost();
-                                } else {
-                                        _bugWait();
-                                }
-                                _alarmInvert = !_alarmInvert;
-                        }
-                }
-        }
+				// Only beep if packet tones are on:
+				if (nvram.nv.packetSounds)
+					beep.play(BEEP_CRITICAL);
 
-        // Refresh the bug
-        lcd.setCursor(LCD_COLUMNS - 1, 0);
-        lcd.write(LCD_CHAR_LINK);
+				// toggle the bug glyph between "where is the link" and "hey you!"
+				if (_alarmInvert) {
+					_bugLost();
+				} else {
+					_bugWait();
+				}
+				_alarmInvert = !_alarmInvert;
+			}
+		}
+	}
+
+	// Refresh the bug, but don't redraw too often
+	if ((millis() - _lastRedraw) >= STATUS_UPDATE_INTERVAL) {
+		lcd.setCursor(LCD_COLUMNS - 1, 0);
+		lcd.write(LCD_CHAR_LINK);
+		_lastRedraw = millis();
+	}
 }
 
 void

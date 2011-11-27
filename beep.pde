@@ -28,7 +28,7 @@
 /// @brief      audio feedback
 
 PROGMEM const Beep::note Beep::_tune[BEEP_TUNES_MAX][BEEP_TUNE_MAX] = {
-        {{2300, 300}, {0, 0}},                          // BEEP_CRITICAL
+        {{2300, 25}, {0, 275}, {0, 0}},     			// BEEP_CRITICAL
         {{500, 100}, {0, 0}},                           // BEEP_NOTICE
         {{659, 100}, {659, 100}, {880, 300}, {0, 0}},   // BEEP_CONNECTED
         {{800, 100}, {800, 100}, {0, 0}},               // BEEP_WAYPOINT

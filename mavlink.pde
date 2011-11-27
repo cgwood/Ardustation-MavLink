@@ -106,7 +106,7 @@ MAVComm::request()
 
 //	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_RAW_SENSORS, 2, 1);
 //	this->send(&msg);
-	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_EXTENDED_STATUS, 2, 1);
+	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_EXTENDED_STATUS, MAV_STREAM_RATE, 1);
 	this->send(&msg);
 //	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_RC_CHANNELS, 2, 1);
 //	this->send(&msg);
@@ -116,7 +116,7 @@ MAVComm::request()
 //	this->send(&msg);
 //	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_POSITION, 2, 1);
 //	this->send(&msg);
-	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_EXTRA1, 2, 1);
+	mavlink_msg_request_data_stream_pack(0xFF, 0xFA, &msg, 1, 1, MAV_DATA_STREAM_EXTRA1, MAV_ATTITUDE_STREAM_RATE, 1);
 	this->send(&msg);
 }
 

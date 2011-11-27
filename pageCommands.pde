@@ -3,6 +3,7 @@
 #define COMMANDFIELDWIDTH 18
 #define CMDVALCOUNT       6
 
+#if SAVEMEM == 0
 PROGMEM const prog_char confirmReset_Index[] =
 	//01234567890123456789
 	 "  This will reset\n"
@@ -44,7 +45,7 @@ PROGMEM const prog_char confirmReset_Home[] =
        "the Aircraft's Home\n"
        "position. Ensure it\n"
        "is **on the GROUND**";
-       
+#endif
 //  struct msg_command_upload {
 //	uint8_t action;
 //	uint16_t itemNumber;
@@ -151,6 +152,7 @@ PageCommands::_clearMarker(void)
 void
 PageCommands::_commandConfirm(void)
 {
+#if SAVEMEM == 0
   switch (_state-201) {
 	case 0: // Reset waypoint to zero
 		_commandConfirmMessage(confirmReset_Index);
@@ -171,6 +173,9 @@ PageCommands::_commandConfirm(void)
 		_commandConfirmMessage(confirmReset_Home);
 		break;
   }
+#else
+  _commandConfirmMessage(confirmMessage);
+#endif
 }
 
 void
@@ -212,6 +217,24 @@ PageCommands::_commandSend(void)
 		break;
 	case 1: // Request parameters
 		mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+//		int8_t param_id[15];// = {'H','D','N','G','2','R','L','L','_','D'};
+//		strcpy(param_id,"HDNG2RLL_D");
+//		param_id[0] = 'H';
+//		param_id[1] = 'D';
+//		param_id[2] = 'N';
+//		param_id[3] = 'G';
+//		param_id[4] = '2';
+//		param_id[5] = 'R';
+//		param_id[6] = 'L';
+//		param_id[7] = 'L';
+//		param_id[8] = '_';
+//		param_id[9] = 'D';
+//		param_id[10] = ' ';
+//		param_id[11] = ' ';
+//		param_id[12] = ' ';
+//		param_id[13] = ' ';
+//		param_id[14] = ' ';
+//		mavlink_msg_param_request_read_pack(0xFF, 0xFA, &msg, 1, 1, param_id, 111);
 		comm.send(&msg);
 		break;
 	case 2: // Stop Stream

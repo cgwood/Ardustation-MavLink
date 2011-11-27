@@ -44,9 +44,22 @@
 #include "watchdog.h"
 #include "params.h"
 
-// currently unused
+// Use antenna tracking, 1=yes, 0=no
+#define USETRACKER 0
+#define SAVEMEM 1
+#define PERFMON 0
+
+// Update rate for streams
+#define MAV_ATTITUDE_STREAM_RATE 4
+#define MAV_STREAM_RATE 4
+
+//#if USETRACKER == 1
 //#include <Servo.h>
 //#include "tracker.h"
+//Tracker			tracker;						///< Antenna tracker
+//#endif
+
+// currently unused
 //#include "alert.h"
 
 #define MSG_ANY  1010
@@ -82,7 +95,6 @@ NVRAM           nvram;                          ///< NVRAM driver
 Markup          markup;                         ///< page markup engine
 Beep            beep(TONE_PIN);                 ///< tune machine
 Parameters      params;                         ///< parameter access
-//Tracker			tracker;						///< Antenna tracker
 
 PagePicker      pickerPage;                     ///< picker widget
 PageSetup       setupPage;                      ///< setup page
@@ -104,7 +116,14 @@ PROGMEM const prog_char APMSettings[] = "Loiter rad\n"
                                         "xtrack angle\n"
                                         "Cruise speed\n"
                                         "ASP FBW min\n"
-                                        "ASP FBW max\n"
+										"ASP FBW max\n"
+										"Throttle min\n"
+										"Throttle max\n"
+										"Throt cruise\n"
+										"Roll limit\n"
+										"Pitch down\n"
+										"Pitch up\n"
+										"RTL Altitude\n"
                                         "Pitch2Thrtl\n"
                                         "Thrtl2Pitch\n"
 										"Log bitmask\n";
@@ -138,12 +157,19 @@ const uint8_t APMSettingsIDs[] =
 	Parameters::TRIM_ARSPD_CM,
 	Parameters::ARSPD_FBW_MIN,
 	Parameters::ARSPD_FBW_MAX,
+	Parameters::THRTL_MIN,
+	Parameters::THRTL_MAX,
+	Parameters::THRTL_CRUISE,
+	Parameters::ROLL_LIM,
+	Parameters::PITCH_MIN,
+	Parameters::PITCH_MAX,
+	Parameters::RTL_ALT,
 	Parameters::KFF_PTCH2THR,
 	Parameters::KFF_THR2PTCH,
 	Parameters::LOG_BITMASK,
 };
-const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0}; // *10^(-x)
-const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    0}; // 99 in both denotes boolean
+const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0,    2,    2,    2,    2,    0,    0,    0}; // *10^(-x)
+const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    0,    0,    0,    1,    1,    1,    0,    2,    2,    0}; // 99 in both denotes boolean
 //const uint8_t APMSettingsIDs[] = {0x27, 0x26, 0x2d, 0x2e, 0x30, 0x31, 0x32, 0x34, 0x35, 0x36, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58};
 //const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    3,    3,    3,   99,   99,   99,   99,   99,   99,   99,   99,   99}; // *10^(-x)
 //const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    2,   99,   99,   99,   99,   99,   99,   99,   99,   99}; // 99 in both denotes boolean
@@ -170,13 +196,15 @@ const uint8_t   pidTypesNav[] = {0x03, 0x04, 0x06};     ///< PID id numbers as p
 PagePIDSetup    NavPidPage(pidHeaderNav,pidTypesNav,nav_pid_p,nav_pid_i,nav_pid_d);   ///< PID Setup page for Navigation
 
 
+#if USETRACKER == 0
 /// the PID / APM setup page confirmation message
 PROGMEM const prog_char confirmMessage[] =
       //01234567890123456789
-       "This will apply the\n"
-       "changes made to the\n"
-       " settings, press\n"
-       "  OK to Upload";
+	   "Press OK to continue";
+//       "This will apply the\n"
+//       "changes made to the\n"
+//       " settings, press\n"
+//       "  OK to Upload";
 //PageText        PidConfirmPage(confirmMessage, PAGE_CONFIRM_TIMEOUT);    ///< PID Upload confirmation page
 
 
@@ -185,6 +213,19 @@ PROGMEM const prog_char aboutMessage[] =
        "  ArduPilot Mega\n"
        "  groundstation\n"
        "  Ver. 29 Oct 2011";
+#else
+/// the PID / APM setup page confirmation message
+PROGMEM const prog_char confirmMessage[] =
+      //01234567890123456789
+       "\nPress OK to confirm.";
+//PageText        PidConfirmPage(confirmMessage, PAGE_CONFIRM_TIMEOUT);    ///< PID Upload confirmation page
+
+
+/// the about/copyright message
+PROGMEM const prog_char aboutMessage[] =
+       "  Welcome";
+#endif
+
 /// banner displayed at startup
 PageText        welcomePage(aboutMessage, PAGE_BANNER_TIMEOUT);
 

@@ -36,6 +36,11 @@ extern "C" {
 extern int __bss_end;
 }
 
+#if PERFMON == 1
+long perf_mon_timer;
+long loopcount;
+#endif
+
 void setup()
 {
         // Initialise the display driver object
@@ -97,6 +102,12 @@ void setup()
 
         // Start the menu system
         Page::begin();
+
+        // Initialize the performance monitor
+#if PERFMON == 1
+        perf_mon_timer = millis();
+        loopcount = 0;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,22 +115,33 @@ void setup()
 ////////////////////////////////////////////////////////////////////////////////
 void loop()
 {
-        // do comms processing
-        comm.update();
+	// do comms processing
+	comm.update();
 
-        // handle button events
-        Page::handleEvent((Page::event)keypad.pressed());
+	// handle button events
+	Page::handleEvent((Page::event)keypad.pressed());
 
-        // and update the current page
-        Page::update();
+	// and update the current page
+	Page::update();
 
-        // update the link status bug & alarm
-        watchdog.check();
+	// update the link status bug & alarm
+	watchdog.check();
 
-        // update the antenna tracker
-//        tracker.update();
+	// update the antenna tracker
+#if USETRACKER == 1
+	tracker.update();
+#endif
+	// update the currently-playing tune
+	beep.update();
 
-        // update the currently-playing tune
-        beep.update();
+#if PERFMON == 1
+	if (millis() - perf_mon_timer > 20000) {
+//		PrintPSTR(PSTR("Loops: "));
+		Serial.println(loopcount);
+		perf_mon_timer = millis();
+		loopcount = 0;
+	}
+	loopcount++;
+#endif
 }
 

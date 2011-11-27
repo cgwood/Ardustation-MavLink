@@ -35,15 +35,23 @@ prog_char param_27[] PROGMEM = "XTRK_ANGLE_CD";
 prog_char param_28[] PROGMEM = "TRIM_ARSPD_CM";
 prog_char param_29[] PROGMEM = "ARSPD_FBW_MIN";
 prog_char param_30[] PROGMEM = "ARSPD_FBW_MAX";
-prog_char param_31[] PROGMEM = "KFF_PTCH2THR";
-prog_char param_32[] PROGMEM = "KFF_THR2PTCH";
-prog_char param_33[] PROGMEM = "LOG_BITMASK";
+prog_char param_31[] PROGMEM = "THR_MIN";
+prog_char param_32[] PROGMEM = "THR_MAX";
+prog_char param_33[] PROGMEM = "TRIM_THROTTLE";
+prog_char param_34[] PROGMEM = "LIM_ROLL_CD";
+prog_char param_35[] PROGMEM = "LIM_PITCH_MIN";
+prog_char param_36[] PROGMEM = "LIM_PITCH_MAX";
+prog_char param_37[] PROGMEM = "ALT_HOLD_RTL";
+prog_char param_38[] PROGMEM = "KFF_PTCH2THR";
+prog_char param_39[] PROGMEM = "KFF_THR2PTCH";
+prog_char param_40[] PROGMEM = "LOG_BITMASK";
 
 PROGMEM const char *paramTable[] = {
 		param_0, param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
 		param_10, param_11, param_12, param_13, param_14, param_15, param_16, param_17, param_18,
 		param_19, param_20, param_21, param_22, param_23, param_24, param_25, param_26, param_27,
-		param_28, param_29, param_30, param_31, param_32, param_33 };
+		param_28, param_29, param_30, param_31, param_32, param_33, param_34, param_35, param_36,
+		param_37, param_38, param_39, param_40 };
   
 /// @class      Watchdog
 /// @brief      The watchdog fires an alarm when packet traffic stops
@@ -96,6 +104,13 @@ public:
             TRIM_ARSPD_CM,
             ARSPD_FBW_MIN,
             ARSPD_FBW_MAX,
+        	THRTL_MIN,
+        	THRTL_MAX,
+        	THRTL_CRUISE,
+        	ROLL_LIM,
+        	PITCH_MIN,
+        	PITCH_MAX,
+        	RTL_ALT,
             KFF_PTCH2THR,
             KFF_THR2PTCH,
             LOG_BITMASK,

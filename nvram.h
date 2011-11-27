@@ -78,5 +78,9 @@ private:
         /// @param value        buffer to write from
         ///
         void            _savex(uint8_t address, uint8_t size, void *value);
+
+        /// Reset downloaded parameters
+        ///
+        void            _reset_params(void);
 };
 
