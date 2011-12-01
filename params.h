@@ -20,10 +20,17 @@ prog_char param_12[] PROGMEM = "HDNG2RLL_P";
 prog_char param_13[] PROGMEM = "HDNG2RLL_I";
 prog_char param_14[] PROGMEM = "HDNG2RLL_D";
 prog_char param_15[] PROGMEM = "HDNG2RLL_IMAX";
+#if AIRSPEEDSENSOR == 1
 prog_char param_16[] PROGMEM = "ARSP2PTCH_P";
 prog_char param_17[] PROGMEM = "ARSP2PTCH_I";
 prog_char param_18[] PROGMEM = "ARSP2PTCH_D";
 prog_char param_19[] PROGMEM = "ARSP2PTCH_IMAX";
+#else
+prog_char param_16[] PROGMEM = "ALT2PTCH_P";
+prog_char param_17[] PROGMEM = "ALT2PTCH_I";
+prog_char param_18[] PROGMEM = "ALT2PTCH_D";
+prog_char param_19[] PROGMEM = "ALT2PTCH_IMAX";
+#endif
 prog_char param_20[] PROGMEM = "ENRGY2THR_P";
 prog_char param_21[] PROGMEM = "ENRGY2THR_I";
 prog_char param_22[] PROGMEM = "ENRGY2THR_D";
@@ -44,14 +51,15 @@ prog_char param_36[] PROGMEM = "LIM_PITCH_MAX";
 prog_char param_37[] PROGMEM = "ALT_HOLD_RTL";
 prog_char param_38[] PROGMEM = "KFF_PTCH2THR";
 prog_char param_39[] PROGMEM = "KFF_THR2PTCH";
-prog_char param_40[] PROGMEM = "LOG_BITMASK";
+prog_char param_40[] PROGMEM = "KFF_PTCHCOMP";
+prog_char param_41[] PROGMEM = "LOG_BITMASK";
 
 PROGMEM const char *paramTable[] = {
 		param_0, param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
 		param_10, param_11, param_12, param_13, param_14, param_15, param_16, param_17, param_18,
 		param_19, param_20, param_21, param_22, param_23, param_24, param_25, param_26, param_27,
 		param_28, param_29, param_30, param_31, param_32, param_33, param_34, param_35, param_36,
-		param_37, param_38, param_39, param_40 };
+		param_37, param_38, param_39, param_40, param_41 };
   
 /// @class      Watchdog
 /// @brief      The watchdog fires an alarm when packet traffic stops
@@ -113,6 +121,7 @@ public:
         	RTL_ALT,
             KFF_PTCH2THR,
             KFF_THR2PTCH,
+            KFF_PTCHCOMP,
             LOG_BITMASK,
             COUNT
         };

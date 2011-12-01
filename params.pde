@@ -22,7 +22,7 @@ Parameters::_notify(mavlink_message_t *buf)
 //		PrintPSTR(PSTR("Saving parameter "));
 //		Serial.print(ID,DEC);
 //		PrintPSTR(PSTR(", "));
-//		Serial.print(_packet.param_index,DEC);
+//		Serial.println(_packet.param_index,DEC);
 //		PrintPSTR(PSTR(", "));
 //		Serial.println(_packet.param_value,DEC);
 		nvram.save_param(&ID, &_packet.param_value);

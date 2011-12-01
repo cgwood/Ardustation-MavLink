@@ -168,14 +168,14 @@ PageAPMSetup::_render(void)
           if (_avail[i] == 1) {
             // Load the value, either editing or live val
             if (i == (_state-101))
-              value = fabs(_value_temp);
+              value = fabs(_value_temp*pow(10,_decPos[i] - _scale[i]));
              else {
                  j = _Types[i];
                  nvram.load_param(&j,&value_local);
 //                 if (value_local < 0)
 //                	 value = (uint32_t)floor(-value_local+0.5);
 //                 else
-                 value = (uint32_t)floor(fabs(value_local)+0.5);
+                 value = (uint32_t)floor(fabs(value_local*pow(10,_decPos[i] - _scale[i]))+0.5);
              }
               //value = _value_live[i].value;
               
@@ -190,7 +190,7 @@ PageAPMSetup::_render(void)
             }
             else {
               // Scale the value and fix for the number of decimal places
-              value *= pow(10,_decPos[i] - _scale[i]);
+//              value *= pow(10,_decPos[i] - _scale[i]);
               decBuf[0] = '0' + (value % 10);
               value /= 10;
               for (j=1;j<(16-APMNAMEFIELDWIDTH);j++) {

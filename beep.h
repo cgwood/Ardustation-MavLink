@@ -48,7 +48,7 @@
 #define BEEP_TUNES_MAX  10      ///< maximum number of tunes
 #define BEEP_TUNE_MAX   4       ///< maximum notes in a tune
 
-#define BEEP_MUTE_MIN   0       ///< codes less than this cannot be muted
+#define BEEP_MUTE_MIN   1       ///< codes less than this cannot be muted
 
 class Beep {
 public:

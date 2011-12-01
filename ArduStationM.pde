@@ -44,14 +44,14 @@
 #include "watchdog.h"
 #include "params.h"
 
-// Use antenna tracking, 1=yes, 0=no
-#define USETRACKER 0
-#define SAVEMEM 1
-#define PERFMON 0
+#define USETRACKER 0				// Use antenna tracking, 1=yes, 0=no (currently unusable)
+#define SAVEMEM 1					// Save Flash space with short confirmation messages
+#define PERFMON 0					// Performance monitoring (debugging)
+#define AIRSPEEDSENSOR 0			// APM has an airspeed sensor yes/no (alters PID page)
 
 // Update rate for streams
-#define MAV_ATTITUDE_STREAM_RATE 4
-#define MAV_STREAM_RATE 4
+#define MAV_ATTITUDE_STREAM_RATE 4	// How many times per second the aircraft's attitude is updated
+#define MAV_STREAM_RATE 2			// How many times per second everything else is updated
 
 //#if USETRACKER == 1
 //#include <Servo.h>
@@ -125,7 +125,8 @@ PROGMEM const prog_char APMSettings[] = "Loiter rad\n"
 										"Pitch up\n"
 										"RTL Altitude\n"
                                         "Pitch2Thrtl\n"
-                                        "Thrtl2Pitch\n"
+										"Thrtl2Pitch\n"
+										"Pitch Comp\n"
 										"Log bitmask\n";
 //"Pitch Comp\n"
 //                                        "Log At. Fast\n"
@@ -166,10 +167,11 @@ const uint8_t APMSettingsIDs[] =
 	Parameters::RTL_ALT,
 	Parameters::KFF_PTCH2THR,
 	Parameters::KFF_THR2PTCH,
+	Parameters::KFF_PTCHCOMP,
 	Parameters::LOG_BITMASK,
 };
-const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0,    2,    2,    2,    2,    0,    0,    0}; // *10^(-x)
-const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    0,    0,    0,    1,    1,    1,    0,    2,    2,    0}; // 99 in both denotes boolean
+const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0,    2,    2,    2,    2,    0,    0,    0,    0}; // *10^(-x)
+const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    0,    0,    0,    1,    1,    1,    0,    2,    2,    2,    0}; // 99 in both denotes boolean
 //const uint8_t APMSettingsIDs[] = {0x27, 0x26, 0x2d, 0x2e, 0x30, 0x31, 0x32, 0x34, 0x35, 0x36, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58};
 //const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    3,    3,    3,   99,   99,   99,   99,   99,   99,   99,   99,   99}; // *10^(-x)
 //const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    2,   99,   99,   99,   99,   99,   99,   99,   99,   99}; // 99 in both denotes boolean
@@ -200,7 +202,7 @@ PagePIDSetup    NavPidPage(pidHeaderNav,pidTypesNav,nav_pid_p,nav_pid_i,nav_pid_
 /// the PID / APM setup page confirmation message
 PROGMEM const prog_char confirmMessage[] =
       //01234567890123456789
-	   "Press OK to continue";
+	   "\nPress OK to continue";
 //       "This will apply the\n"
 //       "changes made to the\n"
 //       " settings, press\n"
