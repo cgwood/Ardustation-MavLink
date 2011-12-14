@@ -16,11 +16,12 @@ Parameters::_notify(mavlink_message_t *buf)
 //	if (_packet.param_index == 1) {
 //		PrintPSTR(PSTR("Receiving parameters\n"));
 //	}
+//	Serial.println((char*)_packet.param_id);
 
 	result = _local_id(&_packet, &ID);
 	if (result == 0) {
 //		PrintPSTR(PSTR("Saving parameter "));
-//		Serial.print(ID,DEC);
+//		Serial.println(ID,DEC);
 //		PrintPSTR(PSTR(", "));
 //		Serial.println(_packet.param_index,DEC);
 //		PrintPSTR(PSTR(", "));

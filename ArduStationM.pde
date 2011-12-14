@@ -44,10 +44,11 @@
 #include "watchdog.h"
 #include "params.h"
 
-#define USETRACKER 0				// Use antenna tracking, 1=yes, 0=no (currently unusable)
+#define AIRSPEEDSENSOR 0			// APM has an airspeed sensor yes/no (alters PID page)
 #define SAVEMEM 1					// Save Flash space with short confirmation messages
 #define PERFMON 0					// Performance monitoring (debugging)
-#define AIRSPEEDSENSOR 0			// APM has an airspeed sensor yes/no (alters PID page)
+#define DEBUGMAVLINK 0				// Prints to serial when messages are received, and their ID
+#define USETRACKER 0				// Use antenna tracking, 1=yes, 0=no (currently unusable)
 
 // Update rate for streams
 #define MAV_ATTITUDE_STREAM_RATE 4	// How many times per second the aircraft's attitude is updated

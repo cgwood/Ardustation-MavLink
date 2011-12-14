@@ -140,6 +140,12 @@ void loop()
 		Serial.println(loopcount);
 		perf_mon_timer = millis();
 		loopcount = 0;
+
+//		Serial.println(paramhit);
+//		paramhit = 0;
+//		mavlink_message_t msg;
+//		mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+//		comm.send(&msg);
 	}
 	loopcount++;
 #endif

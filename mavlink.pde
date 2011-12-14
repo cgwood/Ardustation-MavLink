@@ -62,10 +62,12 @@ MAVComm::update(void)
       // Try to get a new message 
       if(mavlink_parse_char(0, c, &msg, &status)) {
 		_handleMessage(&msg);
-//        if (msg.msgid == MAVLINK_MSG_ID_PARAM_VALUE) {
-//          _interface->print("Message received ");
-//          _interface->println(msg.msgid,HEX);
-//        }
+#if DEBUGMAVLINK == 1
+        if (msg.msgid == MAVLINK_MSG_ID_ATTITUDE) { //MAVLINK_MSG_ID_PARAM_VALUE) {
+          _interface->print("Message received ");
+          _interface->println(msg.msgid,HEX);
+        }
+#endif
       }
   }
 }
