@@ -3,6 +3,7 @@
 /// @file       params.h
 /// @brief      Reads and writes parameters
 
+#if ISPLANE == 1
 // Define the parameters of interest here - Update enumeration to match any changes here
 prog_char param_0[]  PROGMEM = "RLL2SRV_P";
 prog_char param_1[]  PROGMEM = "RLL2SRV_I";
@@ -53,6 +54,53 @@ prog_char param_38[] PROGMEM = "KFF_PTCH2THR";
 prog_char param_39[] PROGMEM = "KFF_THR2PTCH";
 prog_char param_40[] PROGMEM = "KFF_PTCHCOMP";
 prog_char param_41[] PROGMEM = "LOG_BITMASK";
+#else
+// Define the parameters of interest here - Update enumeration to match any changes here
+prog_char param_0[]  PROGMEM = "RATE_RLL_P";
+prog_char param_1[]  PROGMEM = "RATE_RLL_I";
+prog_char param_2[]  PROGMEM = "RATE_RLL_D";
+prog_char param_3[]  PROGMEM = "RATE_RLL_IMAX";
+prog_char param_4[]  PROGMEM = "RATE_PIT_P\0\0\0\0\0";
+prog_char param_5[]  PROGMEM = "RATE_PIT_I";
+prog_char param_6[]  PROGMEM = "RATE_PIT_D";
+prog_char param_7[]  PROGMEM = "RATE_PIT_IMAX";
+prog_char param_8[]  PROGMEM = "RATE_YAW_P";
+prog_char param_9[]  PROGMEM = "RATE_YAW_I";
+prog_char param_10[] PROGMEM = "RATE_YAW_D";
+prog_char param_11[] PROGMEM = "RATE_YAW_IMAX";
+
+prog_char param_12[] PROGMEM = "STB_RLL_P";
+prog_char param_13[] PROGMEM = "STB_RLL_I";
+prog_char param_14[] PROGMEM = "STB_RLL_D";
+prog_char param_15[] PROGMEM = "STB_RLL_IMAX";
+prog_char param_16[] PROGMEM = "STB_PIT_P";
+prog_char param_17[] PROGMEM = "STB_PIT_I";
+prog_char param_18[] PROGMEM = "STB_PIT_D";
+prog_char param_19[] PROGMEM = "STB_PIT_IMAX";
+prog_char param_20[] PROGMEM = "STB_YAW_P";
+prog_char param_21[] PROGMEM = "STB_YAW_I";
+prog_char param_22[] PROGMEM = "STB_YAW_D";
+prog_char param_23[] PROGMEM = "STB_YAW_IMAX";
+
+prog_char param_24[] PROGMEM = "WP_LOITER_RAD";
+prog_char param_25[] PROGMEM = "WP_RADIUS";
+prog_char param_26[] PROGMEM = "XTRK_GAIN_SC";
+prog_char param_27[] PROGMEM = "XTRK_ANGLE_CD";
+prog_char param_28[] PROGMEM = "TRIM_ARSPD_CM";
+prog_char param_29[] PROGMEM = "ARSPD_FBW_MIN";
+prog_char param_30[] PROGMEM = "ARSPD_FBW_MAX";
+prog_char param_31[] PROGMEM = "THR_MIN";
+prog_char param_32[] PROGMEM = "THR_MAX";
+prog_char param_33[] PROGMEM = "TRIM_THROTTLE";
+prog_char param_34[] PROGMEM = "LIM_ROLL_CD";
+prog_char param_35[] PROGMEM = "LIM_PITCH_MIN";
+prog_char param_36[] PROGMEM = "LIM_PITCH_MAX";
+prog_char param_37[] PROGMEM = "ALT_HOLD_RTL";
+prog_char param_38[] PROGMEM = "KFF_PTCH2THR";
+prog_char param_39[] PROGMEM = "KFF_THR2PTCH";
+prog_char param_40[] PROGMEM = "KFF_PTCHCOMP";
+prog_char param_41[] PROGMEM = "LOG_BITMASK";
+#endif
 
 PROGMEM const char *paramTable[] = {
 		param_0, param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,

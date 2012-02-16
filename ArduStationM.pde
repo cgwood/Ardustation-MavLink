@@ -49,6 +49,7 @@
 #define PERFMON 0					// Performance monitoring (debugging)
 #define DEBUGMAVLINK 0				// Prints to serial when messages are received, and their ID
 #define USETRACKER 0				// Use antenna tracking, 1=yes, 0=no (currently unusable)
+#define ISPLANE 0                              // 1 = Plane, 0 = Copter
 
 // Update rate for streams
 #define MAV_ATTITUDE_STREAM_RATE 4	// How many times per second the aircraft's attitude is updated
@@ -181,7 +182,11 @@ PageAPMSetup   APMPage(APMSettings, APMSettingsIDs, APMSettingsScale, APMSetting
 
 /// The PID Setup page for Roll Pitch and Yaw
 // Header format                            11111 22222 33333
+#if ISPLANE == 1
 PROGMEM const prog_char pidHeaderRPY[] = "   Roll Pitch  Yaw";
+#else
+PROGMEM const prog_char pidHeaderRPY[] = "R  Roll Pitch  Yaw";
+#endif
 const uint8_t   pid_p[]  = {Parameters::SROLLP, Parameters::SPITP, Parameters::SYAWP};
 const uint8_t   pid_i[]  = {Parameters::SROLLI, Parameters::SPITI, Parameters::SYAWI};
 const uint8_t   pid_d[]  = {Parameters::SROLLD, Parameters::SPITD, Parameters::SYAWD};
@@ -191,7 +196,11 @@ PagePIDSetup    PidPage(pidHeaderRPY,pidTypesRPY,pid_p,pid_i,pid_d);   ///< PID 
 
 /// The PID Setup page for Nav Roll Nav Pitch ASP and Energy/Altitude
 // Header format                            11111 22222 33333
+#if ISPLANE == 1
 PROGMEM const prog_char pidHeaderNav[] = "  NvRol NvPit ThAlt";
+#else
+PROGMEM const prog_char pidHeaderNav[] = "S  Roll Pitch  Yaw";
+#endif
 const uint8_t   nav_pid_p[]  = {Parameters::NROLLP, Parameters::NPITP, Parameters::NYAWP};
 const uint8_t   nav_pid_i[]  = {Parameters::NROLLI, Parameters::NPITI, Parameters::NYAWI};
 const uint8_t   nav_pid_d[]  = {Parameters::NROLLD, Parameters::NPITD, Parameters::NYAWD};
