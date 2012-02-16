@@ -135,7 +135,7 @@ void loop()
 	beep.update();
 
 #if PERFMON == 1
-	if (millis() - perf_mon_timer > 20000) {
+	if (millis() - perf_mon_timer > 10000) {
 //		PrintPSTR(PSTR("Loops: "));
 		Serial.println(loopcount);
 		perf_mon_timer = millis();

@@ -124,6 +124,36 @@ Buttons::_scanDebounced(void)
         return(scanCode);
 }
 
+//// Primitive debounced button scan
+//uint8_t
+//Buttons::_scanDebounced(void)
+//{
+//	uint8_t         scanCode;
+//
+//	// get initial state, bail immediately if no buttons pressed
+//	if (0 == (scanCode = _scan())) {
+////		_scanCode = 0;
+//		_scanStart = millis();
+//		return(0);
+//	}
+//
+//	// if the state changed, bail
+//	if (scanCode != _scanCode) {
+//		_scanCode = scanCode;
+//		_scanStart = millis();
+//		return(0);
+//	}
+//
+//	// if the state has remained the same for long enough return the button code
+//	if ((millis() - _scanStart) >= BUTTON_DEBOUNCE_TIMER) {
+//		_scanStart = millis();
+//		return(scanCode);
+//	}
+//
+//	// None of the above
+//	return(0);
+//}
+
 uint8_t
 Buttons::pressed(void)
 {

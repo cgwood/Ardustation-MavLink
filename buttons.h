@@ -78,5 +78,9 @@ private:
 
         /// The current/last button reported
         uint8_t         _currentButton;
+//
+//        // Debouncing timestamp
+//    	uint8_t         _scanCode;
+//        unsigned long   _scanStart;
 };
 

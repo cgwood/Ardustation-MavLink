@@ -52,7 +52,7 @@
 
 // Update rate for streams
 #define MAV_ATTITUDE_STREAM_RATE 4	// How many times per second the aircraft's attitude is updated
-#define MAV_STREAM_RATE 2			// How many times per second everything else is updated
+#define MAV_STREAM_RATE 4			// How many times per second everything else is updated
 
 //#if USETRACKER == 1
 //#include <Servo.h>
