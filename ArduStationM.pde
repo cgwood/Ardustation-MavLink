@@ -219,12 +219,19 @@ PROGMEM const prog_char confirmMessage[] =
 //       "  OK to Upload";
 //PageText        PidConfirmPage(confirmMessage, PAGE_CONFIRM_TIMEOUT);    ///< PID Upload confirmation page
 
-
+#if ISPLANE == 1
 /// the about/copyright message
 PROGMEM const prog_char aboutMessage[] =
-       "  ArduPilot Mega\n"
+       "  ArduPlane Mega\n"
        "  groundstation\n"
        "  Ver. 29 Oct 2011";
+#else
+/// the about/copyright message
+PROGMEM const prog_char aboutMessage[] =
+       "  ArduCopter Mega\n"
+       "  groundstation\n"
+       "  Ver. 16 Feb 2012";
+#endif
 #else
 /// the PID / APM setup page confirmation message
 PROGMEM const prog_char confirmMessage[] =
