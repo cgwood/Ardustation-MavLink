@@ -71,15 +71,15 @@ prog_char param_11[] PROGMEM = "RATE_YAW_IMAX";
 
 prog_char param_12[] PROGMEM = "STB_RLL_P";
 prog_char param_13[] PROGMEM = "STB_RLL_I";
-prog_char param_14[] PROGMEM = "STB_RLL_D";
+prog_char param_14[] PROGMEM = "STAB_D";
 prog_char param_15[] PROGMEM = "STB_RLL_IMAX";
 prog_char param_16[] PROGMEM = "STB_PIT_P";
 prog_char param_17[] PROGMEM = "STB_PIT_I";
-prog_char param_18[] PROGMEM = "STB_PIT_D";
+prog_char param_18[] PROGMEM = "STAB_D";
 prog_char param_19[] PROGMEM = "STB_PIT_IMAX";
 prog_char param_20[] PROGMEM = "STB_YAW_P";
 prog_char param_21[] PROGMEM = "STB_YAW_I";
-prog_char param_22[] PROGMEM = "STB_YAW_D";
+prog_char param_22[] PROGMEM = "STAB_D";
 prog_char param_23[] PROGMEM = "STB_YAW_IMAX";
 
 prog_char param_24[] PROGMEM = "WP_LOITER_RAD";
