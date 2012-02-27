@@ -231,7 +231,7 @@ PagePIDSetup::_alterLocal(float alterMag)
 //  i = (_state-101)%3; // Column, i.e. Roll/pitch/yaw
 //  j = (_state-101)/3; // Row, i.e. PID
 
-	_value_temp = constrain(_value_temp + alterMag, 0, 3);
+	_value_temp = constrain(_value_temp + alterMag, 0, 10);
 //  //@bug sometimes this makes the value wrap around
 //  //@{
 //  switch ((_state-101)/3) {

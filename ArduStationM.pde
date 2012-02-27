@@ -119,9 +119,9 @@ PROGMEM const prog_char APMSettings[] = "Loiter rad\n"
                                         "Cruise speed\n"
                                         "ASP FBW min\n"
 										"ASP FBW max\n"
-										"Throttle min\n"
-										"Throttle max\n"
-										"Throt cruise\n"
+										"Throttle P\n"
+										"Throttle I\n"
+										"Throttle D\n"
 										"Roll limit\n"
 										"Pitch down\n"
 										"Pitch up\n"
@@ -173,7 +173,7 @@ const uint8_t APMSettingsIDs[] =
 	Parameters::LOG_BITMASK,
 };
 const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0,    2,    2,    2,    2,    0,    0,    0,    0}; // *10^(-x)
-const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    0,    0,    0,    1,    1,    1,    0,    2,    2,    2,    0}; // 99 in both denotes boolean
+const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    3,    1,    1,    1,    0,    2,    2,    2,    0}; // 99 in both denotes boolean
 //const uint8_t APMSettingsIDs[] = {0x27, 0x26, 0x2d, 0x2e, 0x30, 0x31, 0x32, 0x34, 0x35, 0x36, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58};
 //const uint8_t APMSettingsScale[] = { 0,    0,    2,    2,    2,    0,    0,    3,    3,    3,   99,   99,   99,   99,   99,   99,   99,   99,   99}; // *10^(-x)
 //const uint8_t APMSettingsDP[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    2,   99,   99,   99,   99,   99,   99,   99,   99,   99}; // 99 in both denotes boolean
